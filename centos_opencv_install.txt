@@ -24,5 +24,5 @@ CMAKE_INSTALL_PREFIX=/usr/local might need to be changed depends on where defaul
 make -j $(nproc)
 make install
 
-if python lib does
-ln -s /usr/local/lib/python2.7/site-packages/cv2.so cv2.so
+if python lib does in /usr/local/lib/ use command below to create a link to actual python lib
+ln -s /usr/local/lib/python2.7/site-packages/cv2.so /python_lib_path/cv2.so
