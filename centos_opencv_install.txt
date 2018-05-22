@@ -1,4 +1,4 @@
-opencv 3.4 install (CentOS 7):
+opencv 3.4 install with python (CentOS 7):
 
 sudo yum -y update
 sudo yum groupinstall 'Development Tools'
