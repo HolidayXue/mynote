@@ -32,3 +32,6 @@ python
 import sys
 print '\n'.join(sys.path)
 
+Tips No.2:
+-D WITH_CUDA=ON
+-D WITH_CUBLAS=1
