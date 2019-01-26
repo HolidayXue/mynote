@@ -1,1 +1,5 @@
 bjam stage --toolset=msvc-14.1 architecture=x86 address-model=64 --build-type=complete --without-graph --without-graph_parallel --stagedir="D:/libraries/boost/boost_1_66_0/lib/vc141-x64" link=static,shared runtime-link=shared runtime-link=static threading=multi debug release
+
+
+put the dll in xxx\Microsoft Visual Studio\2017\Enterprise\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CRT into python install dir
+put the boost dll boost_python3-vc141-mt-gd-x64-1_66.dll and boost_python3-vc141-mt-x64-1_66.dll into python install dir
