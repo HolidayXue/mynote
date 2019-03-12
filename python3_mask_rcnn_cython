@@ -1,0 +1,20 @@
+Modified, with gpu_nms supports
+I ran it on windows successfully (Python 3.6.6, VS2015 compiler, CUDA 9.0 with CUDNN v7), just modify some code.
+Tested both cpu_nms and gpu_nms (but don't know why gpu_nms is a little slower than cpu_nms).
+
+Note: If any strange error occurred, I suggest deleting all the generated .c and .cpp files (lib/nms/cpu_nms.c, lib/nms/gpu_nms.cpp, lib/utils/bbox.c) and everything in lib/build
+
+file lib/nms/cpu_nms.pyx:
+change (line 25)
+
+cdef np.ndarray[np.int_t, ndim=1] order = scores.argsort()[::-1]
+to
+
+cdef np.ndarray[np.int64_t, ndim=1] order = scores.argsort()[::-1]
+file lib/nms/gpu_nms.pyx:
+change (line 25)
+
+    cdef np.ndarray[np.int_t, ndim=1] \
+to
+
+    cdef np.ndarray[np.int64_t, ndim=1] \
