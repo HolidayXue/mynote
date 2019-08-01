@@ -1,9 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 21 09:34:51 2018
+
+@author: zhoubo
+"""
+
 #!/usr/bin/env python
 
 import numpy as np
 import os
 # on Windows, we need the original PATH without Anaconda's compiler in it:
-PATH = os.environ.get('PATH')
+PATH = os.environ.get('PATH')+ ';C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx64\\x64'
 from distutils.spawn import spawn, find_executable
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
@@ -11,7 +18,7 @@ import sys
 
 # CUDA specific config
 # nvcc is assumed to be in user's PATH
-nvcc_compile_args = ['-O', '--ptxas-options=-v', '-arch=sm_35', '-c', '--compiler-options=-fPIC']
+nvcc_compile_args = ['-O3', '--ptxas-options=-v', '-arch=sm_61', '-c', '--compiler-options=-fPIC']
 nvcc_compile_args = os.environ.get('NVCCFLAGS', '').split() + nvcc_compile_args
 cuda_libs = ['cublas']
 
@@ -23,15 +30,26 @@ except AttributeError:
     numpy_include = np.get_numpy_include()
 
 
-cudamat_ext = Extension('gpu_nms',
+cudamat_ext = Extension('nms.gpu_nms',
                         sources=[
-                                'nms_kernel.cu','gpu_nms.pyx'
+                                'nms\\gpu_nms.cu'
                                 ],
                         language='c++',
                         libraries=cuda_libs,
                         extra_compile_args=nvcc_compile_args,
-                        include_dirs = [numpy_include, 'C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v9.2\\include'])
+                        include_dirs = [numpy_include, 'C:\\Programming\\CUDA\\v7.5\\include'])
 
+ext_modules = [
+    Extension('gpu_nms',
+        ['nms_kernel.cu', 'gpu_nms.pyx'],
+        library_dirs=['C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.0\\lib\\x64'],
+        libraries=cuda_libs,
+        language='c++',
+#        runtime_library_dirs=['C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v9.0\\lib\\x64'],
+        extra_compile_args=nvcc_compile_args,
+        include_dirs = [numpy_include, 'C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.0\\include']
+    ),
+]
 
 class CUDA_build_ext(build_ext):
     """
@@ -76,6 +94,8 @@ class CUDA_build_ext(build_ext):
             cmd[:1] = ['nvcc', '--compiler-bindir',
                        os.path.dirname(find_executable("cl.exe", PATH))
                        or cmd[0]]
+            for i in range(len(cmd)):
+                print(i,cmd[i])
             # - Secondly, we fix a bunch of command line arguments.
             for idx, c in enumerate(cmd):
                 # create .dll instead of .pyd files
@@ -89,10 +109,12 @@ class CUDA_build_ext(build_ext):
                 # replace /Tc... by ...
                 elif c.startswith('/Tc'): cmd[idx] = c[3:]
                 
-                #******fix ID=2 error
-                elif 'ID=2' in c:cmd[idx]=c[:15]
                 #******replace /Tp by ..
                 elif c.startswith('/Tp'):cmd[idx]=c[3:]
+                
+                #******fix ID=2 error
+                elif 'ID=2' in c:cmd[idx]=c[:15]
+                
                 # replace /Fo... by -o ...
                 elif c.startswith('/Fo'): cmd[idx:idx+1] = ['-o', c[3:]]
                 # replace /LIBPATH:... by -L...
@@ -119,10 +141,17 @@ class CUDA_build_ext(build_ext):
             # And the following for linking:
             # nvcc --shared -o <file>.dll <file1>.obj <file2>.obj -lcublas
             # This could be done by a NVCCCompiler class for all platforms.
+
+        for i in range(len(cmd)):
+            print(i,cmd[i])
+
+        if cmd[9]=='build\temp.win-amd64-3.5\Release\bbox.obj':
+            cmd[12]=cmd[12].replace('ID=2,','')
+
         spawn(cmd, search_path, verbose, dry_run)
 
 setup(name="py_fast_rcnn_gpu",
       description="Performs linear algebra computation on the GPU via CUDA",
-      ext_modules=[cudamat_ext],
+      ext_modules=ext_modules,
       cmdclass={'build_ext': CUDA_build_ext},
 )
