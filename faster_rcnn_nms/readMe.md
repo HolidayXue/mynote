@@ -24,7 +24,12 @@ nvcc_compile_args = ['-O3', '--ptxas-options=-v', '-arch=sm_35', '-c', '--compil
 
 
 
-
+使用命令 python setup_win_gpu.py build_ext --inplace进行安装
+若出现
+gpu_nms.cpp(2190): error C2664: “void _nms(int *,int *,const float *,int,int,float,int)”: 无法将参数 1 从“__pyx_t_5numpy_int32_t *”转换为“int *”
+gpu_nms.cpp(2190): note: 与指向的类型无关；强制转换要求 reinterpret_cast、C 样式强制转换或函数样式强制转换
+error: command 'C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1\\bin\\nvcc.exe' failed with exit status 2
+则将__pyx_t_5numpy_int32_t 替换为int
 gpu_nms.cpp(2162): error C2664: “void _nms(int *,int *,const float *,int,int,float,int)”: 无法将参数 1 从“__pyx_t_5numpy_int32_t *”转换为“int *”
 gpu_nms.cpp(2162): note: 与指向的类型无关；强制转换要求 reinterpret_cast、C 样式强制转换或函数样式强制转换
 error: command 'C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1\\bin\\nvcc.exe' failed with exit status 2
