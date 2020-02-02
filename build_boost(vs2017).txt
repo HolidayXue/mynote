@@ -1,5 +1,14 @@
+run $boost_root_path/bootstrap.bat
+copy $boost_root_path/tools/build/example/user-config.jam $boost_root_path/user-config.jam
+
+edit # Configure specific Python version.
+like this snapshot:
+using python : 3.7 : T:/programtools/anaconda/envs/pytorch/python.exe : T:/programtools/anaconda/envs/pytorch/include : T:/programtools/anaconda/envs/pytorch/libs ;
+
+
 bjam stage --toolset=msvc-14.1 architecture=x86 address-model=64 --build-type=complete --without-graph --without-graph_parallel --stagedir="D:/libraries/boost/boost_1_66_0/lib/vc141-x64" link=static,shared runtime-link=shared runtime-link=static threading=multi debug release
 
+copy
 
 put the dll in xxx\Microsoft Visual Studio\2017\Enterprise\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CRT into python install dir
 put the boost dll boost_python3-vc141-mt-gd-x64-1_66.dll and boost_python3-vc141-mt-x64-1_66.dll into python install dir
