@@ -1,9 +1,5 @@
-找到site-packages\pyvips路径
-
-在文件中添加
+��
 import os as _os
 
 _path = _os.path.dirname(__file__) + '\\bin;' + _os.environ['PATH']
 _os.environ['PATH'] = _path
-
-然后将vips-dev-8.7\bin目录拷贝到site-packages\pyvips\bin目录即可安装成功
