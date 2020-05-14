@@ -1,0 +1,9 @@
+
+
+if installed PyQt5 and PySide2, i solved problem
+Copy
+\Anaconda3\Lib\site-packages\PySide2\plugins\platforms\qminimal.dll
+\Anaconda3\Lib\site-packages\PySide2\plugins\platforms\qoffscreen.dll
+\Anaconda3\Lib\site-packages\PySide2\plugins\platforms\qwindows.dll
+files to
+\Anaconda3\Library\plugins\platforms\
